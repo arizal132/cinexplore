@@ -22,11 +22,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <body class="flex flex-col min-h-screen">
     <canvas id="starCanvas"></canvas>
     <nav class="navbar bg-white text-white p-4">
-      <div class="container mx-auto flex items-center justify-between">
-        <div class="flex items-center">
-          <img src="/images/logo.png" alt="" width="70" height="auto" class="mr-2" />
-          <img src="/images/name.png" alt="" width="140" height="auto" />
-        </div>
+    <div class="container mx-auto flex flex-col md:flex-row items-center md:justify-between justify-start">
+  <div class="flex items-center self-start md:self-auto mb-2 md:mb-0">
+    <img src="/images/logo.png" alt="" width="70" height="auto" class="mr-2" />
+    <img src="/images/name.png" alt="" width="140" height="auto" />
+  </div>
+
 
         <button
           id="navToggle"

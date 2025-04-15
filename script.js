@@ -150,12 +150,9 @@ function loadPopularMovies() {
 
   filmsContainer.innerHTML = "";
 
-  // Remove back button when returning to home
+  // Remove button container if it exists
   if (buttonContainer) {
-    const backButton = buttonContainer.querySelector("button:first-child");
-    if (backButton) {
-      backButton.remove();
-    }
+    buttonContainer.remove();
   }
 
   // Show load more button
@@ -163,6 +160,12 @@ function loadPopularMovies() {
     loadMoreBtn.style.display = "block";
     loadMoreBtn.className =
       "px-6 py-2 bg-blue-500 text-white rounded-md text-sm font-bold hover:bg-blue-600 mx-auto block text-center mt-4";
+  }
+
+  // Make sure the back button in navbar is hidden
+  const backButton = document.getElementById("backButton");
+  if (backButton) {
+    backButton.classList.add("hidden");
   }
 
   // Fetch popular movies
@@ -219,6 +222,18 @@ async function searchFilm() {
   document.getElementById("filmsContainer").classList.remove("hidden");
   document.getElementById("detailContainer").classList.add("hidden");
   document.getElementById("loadMoreBtn").style.display = "none";
+  
+  // Remove button container if exists
+  const buttonContainer = document.getElementById("buttonContainer");
+  if (buttonContainer) {
+    buttonContainer.remove();
+  }
+  
+  // Show back button in navbar
+  const backButton = document.getElementById("backButton");
+  if (backButton) {
+    backButton.classList.remove("hidden");
+  }
 
   try {
     const response = await fetch(
@@ -249,6 +264,12 @@ async function filterByGenre() {
   const genre = document.getElementById("genreSelect").value;
   const filmsContainer = document.getElementById("filmsContainer");
   const loadMoreBtn = document.getElementById("loadMoreBtn");
+  
+  // Remove button container if exists
+  const buttonContainer = document.getElementById("buttonContainer");
+  if (buttonContainer) {
+    buttonContainer.remove();
+  }
 
   currentPage = 1; // Reset page to first
   currentGenre = genre; // Store active genre
@@ -264,6 +285,12 @@ async function filterByGenre() {
 
   // Show load more button
   loadMoreBtn.style.display = "block";
+  
+  // Show back button in navbar when filtering
+  const backButton = document.getElementById("backButton");
+  if (backButton) {
+    backButton.classList.remove("hidden");
+  }
 
   // If no genre selected (All Genres), show popular movies
   if (!genre) {
@@ -363,9 +390,10 @@ function backToGrid() {
   document.getElementById("detailContainer").classList.add("hidden");
 
   const loadMoreBtn = document.getElementById("loadMoreBtn");
+  const buttonContainer = document.getElementById("buttonContainer");
 
   // Make sure "Load More" button only appears on main page, not favorites
-  if (!document.getElementById("buttonContainer")) {
+  if (!buttonContainer) {
     loadMoreBtn.style.display = "block";
   } else {
     loadMoreBtn.style.display = "none";
@@ -447,31 +475,48 @@ async function showFavorites() {
     const favorites = await response.json();
     
     const filmsContainer = document.getElementById("filmsContainer");
-    let buttonContainer = document.getElementById("buttonContainer");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
+    
+    // Remove any existing button container
+    const oldButtonContainer = document.getElementById("buttonContainer");
+    if (oldButtonContainer) {
+      oldButtonContainer.remove();
+    }
+    
+    // Create a new button container
+    const buttonContainer = document.createElement("div");
+    buttonContainer.id = "buttonContainer";
+    buttonContainer.className = "flex justify-center mt-4";
+    filmsContainer.parentNode.insertBefore(buttonContainer, filmsContainer);
 
     filmsContainer.innerHTML = "";
-
-    if (!buttonContainer) {
-      buttonContainer = document.createElement("div");
-      buttonContainer.id = "buttonContainer";
-      buttonContainer.className = "flex justify-center mt-4";
-      filmsContainer.before(buttonContainer);
-    }
-
     buttonContainer.innerHTML = "";
 
-    // Add back button for favorites list
+    // Add back button for favorites list (always visible)
     const backButton = document.createElement("button");
-    backButton.textContent = "Back";
+    backButton.textContent = "Back to Movies";
     backButton.className =
       "favorite-back-button px-6 py-2 bg-gray-500 text-white rounded-md text-sm font-bold hover:bg-gray-600";
     backButton.onclick = function () {
+      buttonContainer.remove(); // Remove the button container
       loadPopularMovies();
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     buttonContainer.appendChild(backButton);
+
+    // Make the navbar back button visible
+    const navBackButton = document.getElementById("backButton");
+    if (navBackButton) {
+      navBackButton.classList.remove("hidden");
+      navBackButton.onclick = function() {
+        if (buttonContainer) {
+          buttonContainer.remove();
+        }
+        loadPopularMovies();
+        navBackButton.classList.add("hidden");
+      };
+    }
 
     if (loadMoreBtn) {
       loadMoreBtn.style.display = "none";
@@ -508,15 +553,6 @@ async function showFavorites() {
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-
-    // Handle back button if it exists
-    if (document.getElementById("backButton")) {
-      document.getElementById("backButton").classList.remove("hidden");
-      document.getElementById("backButton").onclick = function () {
-        loadPopularMovies();
-        document.getElementById("backButton").classList.add("hidden");
-      };
-    }
   } catch (error) {
     console.error('Error fetching favorites:', error);
     alert('Failed to load favorites. Please try again.');
@@ -535,6 +571,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }, 100);
 
   loadPopularMovies();
+  
+  // Set up back button in navbar
+  const backButton = document.getElementById("backButton");
+  if (backButton) {
+    backButton.onclick = function() {
+      const buttonContainer = document.getElementById("buttonContainer");
+      if (buttonContainer) {
+        buttonContainer.remove();
+      }
+      loadPopularMovies();
+      backButton.classList.add("hidden");
+    };
+  }
 });
 
 window.onload = () => {
@@ -579,31 +628,3 @@ window.onload = () => {
     }
   });
 };
-
-// Add this to the bottom of your script.js file or within a script tag
-
-document.addEventListener('DOMContentLoaded', function() {
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-  
-  navToggle.addEventListener('click', function() {
-    navLinks.classList.toggle('hidden');
-  });
-  
-  // Close menu when clicking outside on mobile
-  document.addEventListener('click', function(event) {
-    const isNavButton = event.target.closest('#navToggle');
-    const isNavMenu = event.target.closest('#navLinks');
-    
-    if (!isNavButton && !isNavMenu && window.innerWidth <= 768 && !navLinks.classList.contains('hidden')) {
-      navLinks.classList.add('hidden');
-    }
-  });
-  
-  // Adjust for window resize
-  window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-      navLinks.classList.remove('hidden');
-    }
-  });
-});

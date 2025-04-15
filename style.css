@@ -96,7 +96,8 @@ canvas {
 @media (max-width: 768px) {
   #navLinks {
     text-align: center;
-    padding: 1rem 0;
+    padding: 0;
+    margin-top: 0;
   }
   
   #navLinks li {
@@ -113,16 +114,34 @@ canvas {
   .navbar .container {
     flex-direction: column;
     align-items: center;
+    position: relative;
+    padding-top: 0;
+    padding-bottom: 0;
   }
   
-  .navbar .flex.items-center {
-    margin-bottom: 1rem;
+  .navbar .flex.items-center.self-start {
+    align-self: center !important;
+    margin-bottom: 0;
+    margin-top: 0;
   }
   
   #navToggle {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: 20px;
+    right: 20px;
+  }
+  
+  /* Center the logo and name images with no extra space */
+  .navbar .container .flex.items-center {
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+  }
+  
+  /* Remove space between navbar and content when toggle expanded */
+  #home {
+    margin-top: 0;
+    padding-top: 20px;
   }
 }
 
