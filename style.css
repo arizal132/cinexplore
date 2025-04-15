@@ -92,6 +92,40 @@ canvas {
   transform: none !important;
 }
 
+/* Media Queries for Navigation */
+@media (max-width: 768px) {
+  #navLinks {
+    text-align: center;
+    padding: 1rem 0;
+  }
+  
+  #navLinks li {
+    margin: 0.5rem 0;
+  }
+  
+  #navLinks li a,
+  #navLinks li button {
+    display: inline-block;
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .navbar .container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .navbar .flex.items-center {
+    margin-bottom: 1rem;
+  }
+  
+  #navToggle {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
 /* Header Section */
 header {
   color: white;
@@ -269,13 +303,6 @@ button:hover {
 
 #buttonContainer button:first-child {
   display: none;
-}
-
-/* Media Queries */
-@media (max-width: 768px) {
-  #navLinks li button {
-    margin-bottom: 10px;
-  }
 }
 
 /* Animations */

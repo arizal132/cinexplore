@@ -579,3 +579,31 @@ window.onload = () => {
     }
   });
 };
+
+// Add this to the bottom of your script.js file or within a script tag
+
+document.addEventListener('DOMContentLoaded', function() {
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  
+  navToggle.addEventListener('click', function() {
+    navLinks.classList.toggle('hidden');
+  });
+  
+  // Close menu when clicking outside on mobile
+  document.addEventListener('click', function(event) {
+    const isNavButton = event.target.closest('#navToggle');
+    const isNavMenu = event.target.closest('#navLinks');
+    
+    if (!isNavButton && !isNavMenu && window.innerWidth <= 768 && !navLinks.classList.contains('hidden')) {
+      navLinks.classList.add('hidden');
+    }
+  });
+  
+  // Adjust for window resize
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      navLinks.classList.remove('hidden');
+    }
+  });
+});
